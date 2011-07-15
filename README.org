@@ -1,0 +1,2 @@
+* Riak-Hadoop
+Java project that to use data in [[http://basho.com][Riak]] as input to [[http://hadoop.apache.org/mapreduce/][Hadoop Map/Reduce]]
