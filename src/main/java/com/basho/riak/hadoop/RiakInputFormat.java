@@ -1,5 +1,5 @@
 /*
- * This file is provided to you under the Apache License, Version 2.0 (the
+x * This file is provided to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * 
@@ -13,7 +13,7 @@
  */
 package com.basho.riak.hadoop;
 
-import static com.basho.riak.hadoop.ClientFactory.getClient;
+import static com.basho.riak.hadoop.config.ClientFactory.getClient;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,8 +28,11 @@ import org.apache.hadoop.mapreduce.TaskAttemptContext;
 
 import com.basho.riak.client.IRiakClient;
 import com.basho.riak.client.RiakException;
-import com.basho.riak.client.bucket.Bucket;
 import com.basho.riak.client.raw.RiakResponse;
+import com.basho.riak.hadoop.config.NoRiakLocationsException;
+import com.basho.riak.hadoop.config.RiakConfig;
+import com.basho.riak.hadoop.config.RiakLocation;
+import com.basho.riak.hadoop.keylisters.KeyLister;
 
 /**
  * @author russell
@@ -37,47 +40,55 @@ import com.basho.riak.client.raw.RiakResponse;
  */
 public class RiakInputFormat extends InputFormat<BucketKey, RiakResponse> {
 
-    private static final int MINIMUM_SPLIT = 10; // make this a config param
+    private static final int MINIMUM_SPLIT = 10;
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.apache.hadoop.mapreduce.InputFormat#createRecordReader(org.apache
-     * .hadoop.mapreduce.InputSplit,
-     * org.apache.hadoop.mapreduce.TaskAttemptContext)
-     */
     @Override public RecordReader<BucketKey, RiakResponse> createRecordReader(InputSplit split,
                                                                               TaskAttemptContext context)
             throws IOException, InterruptedException {
         return new RiakRecordReader();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.apache.hadoop.mapreduce.InputFormat#getSplits(org.apache.hadoop.mapreduce
-     * .JobContext)
-     */
     @Override public List<InputSplit> getSplits(JobContext context) throws IOException, InterruptedException {
-
         Configuration conf = context.getConfiguration();
         RiakLocation[] locations = RiakConfig.getRiakLocatons(conf);
 
         if (locations.length == 0) {
-            throw new IOException("No riak locations configured");
+            throw new NoRiakLocationsException();
         }
 
-        String bucket = RiakConfig.getBucket(conf);
+        final KeyLister keyLister = RiakConfig.getKeyLister(conf);
+
         try {
-            List<BucketKey> keys = getKeys(locations, bucket, 0);
+            List<BucketKey> keys = getKeys(locations, keyLister, 0);
             List<InputSplit> splits = getSplits(keys, locations,
                                                 getSplitSize(keys.size(), RiakConfig.getHadoopClusterSize(conf, 3)));
             return splits;
         } catch (RiakException e) {
             throw new IOException(e);
         }
+    }
+
+    /**
+     * Get the list of input keys for the task. If the first location fails, try
+     * the next, and so on, until we have a success or definitive failure.
+     * 
+     * @return the list of bucket/keys (may be empty, never null)
+     * @throws RiakException
+     */
+    public static List<BucketKey> getKeys(RiakLocation[] locations, KeyLister keyLister, int attemptNumber)
+            throws RiakException {
+        final List<BucketKey> keys = new ArrayList<BucketKey>();
+        try {
+            IRiakClient attemptClient = getClient(locations[attemptNumber]);
+            keys.addAll(keyLister.getKeys(attemptClient));
+        } catch (RiakException e) {
+            if (attemptNumber >= (locations.length - 1)) {
+                throw e;
+            } else {
+                getKeys(locations, keyLister, ++attemptNumber);
+            }
+        }
+        return keys;
     }
 
     /**
@@ -92,9 +103,8 @@ public class RiakInputFormat extends InputFormat<BucketKey, RiakResponse> {
      *            rough number of nodes in the hadoop m/r cluster
      * @return the size for each split
      */
-    private int getSplitSize(int numberOfKeys, int hadoopClusterSize) {
+    public static int getSplitSize(int numberOfKeys, int hadoopClusterSize) {
         int splitSize = numberOfKeys / (hadoopClusterSize * 10);
-
         if (splitSize < MINIMUM_SPLIT) {
             // too few? then use a smaller divider
             splitSize = numberOfKeys / hadoopClusterSize;
@@ -120,59 +130,19 @@ public class RiakInputFormat extends InputFormat<BucketKey, RiakResponse> {
      *            The target size for each split
      * @return the input splits
      */
-    private List<InputSplit> getSplits(List<BucketKey> keys, RiakLocation[] locations, int splitSize) {
-        List<InputSplit> splits = new ArrayList<InputSplit>();
+    public static List<InputSplit> getSplits(final List<BucketKey> keys, final RiakLocation[] locations, int splitSize) {
+        final List<InputSplit> splits = new ArrayList<InputSplit>();
         int splitCnt = 0;
         int startIndex = 0;
         int numberOfKeys = keys.size();
         while (startIndex < numberOfKeys) {
             int endIndex = Math.min(numberOfKeys, splitSize + startIndex);
-            List<BucketKey> split = keys.subList(startIndex, endIndex);
+            final List<BucketKey> split = keys.subList(startIndex, endIndex);
             splits.add(new RiakInputSplit(split, locations[splitCnt % locations.length]));
             splitCnt++;
             startIndex = endIndex;
         }
 
         return splits;
-    }
-
-    /**
-     * Get the list of input keys for the task. If the first location fails, try
-     * the next, and so on, until we have a success or definitive failure.
-     * 
-     * @return the list of bucket/keys (may be empty, never null)
-     * @throws RiakException
-     */
-    private List<BucketKey> getKeys(RiakLocation[] locations, String bucket, int attemptNumber) throws RiakException {
-        List<BucketKey> keys = new ArrayList<BucketKey>();
-        try {
-            keys = getKeys(locations[attemptNumber], bucket);
-        } catch (RiakException e) {
-            if (attemptNumber >= (locations.length - 1)) {
-                throw e;
-            } else {
-                getKeys(locations, bucket, attemptNumber++);
-            }
-        }
-        return keys;
-    }
-
-    /**
-     * Using a client connected to <code>location</code> get perform the list
-     * keys for <code>bucket</code>.
-     * 
-     * @param location
-     *            The {@link RiakLocation} to list the keys
-     */
-    private List<BucketKey> getKeys(RiakLocation location, String bucket) throws RiakException {
-        List<BucketKey> keys = new ArrayList<BucketKey>();
-        IRiakClient client = getClient(location);
-        Bucket b = client.fetchBucket(bucket).execute();
-
-        for (String key : b.keys()) {
-            keys.add(new BucketKey(bucket, key));
-
-        }
-        return keys;
     }
 }

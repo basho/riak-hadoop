@@ -13,7 +13,7 @@
  */
 package com.basho.riak.hadoop;
 
-import static com.basho.riak.hadoop.ClientFactory.getRawClient;
+import static com.basho.riak.hadoop.config.ClientFactory.getRawClient;
 
 import java.io.IOException;
 import java.util.concurrent.ConcurrentLinkedQueue;

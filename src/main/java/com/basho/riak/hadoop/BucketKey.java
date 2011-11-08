@@ -13,6 +13,8 @@
  */
 package com.basho.riak.hadoop;
 
+import org.codehaus.jackson.annotate.JsonCreator;
+
 /**
  * @author russell
  * 
@@ -21,6 +23,15 @@ public class BucketKey {
 
     private final String bucket;
     private final String key;
+
+    @JsonCreator public BucketKey(String[] bucketKey) {
+        if (bucketKey == null || bucketKey.length != 2) {
+            throw new IllegalArgumentException("bucketKey must be a String[] of length 2");
+        }
+
+        this.bucket = bucketKey[0];
+        this.key = bucketKey[1];
+    }
 
     /**
      * @param bucket
@@ -34,15 +45,70 @@ public class BucketKey {
     /**
      * @return the bucket
      */
-    public synchronized String getBucket() {
+    public String getBucket() {
         return bucket;
     }
 
     /**
      * @return the key
      */
-    public synchronized String getKey() {
+    public String getKey() {
         return key;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((bucket == null) ? 0 : bucket.hashCode());
+        result = prime * result + ((key == null) ? 0 : key.hashCode());
+        return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof BucketKey)) {
+            return false;
+        }
+        BucketKey other = (BucketKey) obj;
+        if (bucket == null) {
+            if (other.bucket != null) {
+                return false;
+            }
+        } else if (!bucket.equals(other.bucket)) {
+            return false;
+        }
+        if (key == null) {
+            if (other.key != null) {
+                return false;
+            }
+        } else if (!key.equals(other.key)) {
+            return false;
+        }
+        return true;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
+    @Override public String toString() {
+        return String.format("BucketKey [bucket=%s, key=%s]", bucket, key);
     }
 
 }

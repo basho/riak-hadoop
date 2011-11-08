@@ -23,6 +23,8 @@ import java.util.List;
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.mapreduce.InputSplit;
 
+import com.basho.riak.hadoop.config.RiakLocation;
+
 /**
  * @author russell
  * 
@@ -112,4 +114,42 @@ public class RiakInputSplit extends InputSplit implements Writable {
         }
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + Arrays.hashCode(inputs);
+        result = prime * result + ((location == null) ? 0 : location.hashCode());
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof RiakInputSplit)) {
+            return false;
+        }
+        RiakInputSplit other = (RiakInputSplit) obj;
+        if (!Arrays.equals(inputs, other.inputs)) {
+            return false;
+        }
+        if (location == null) {
+            if (other.location != null) {
+                return false;
+            }
+        } else if (!location.equals(other.location)) {
+            return false;
+        }
+        return true;
+    }
+    
 }

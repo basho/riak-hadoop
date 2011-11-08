@@ -20,13 +20,14 @@ import java.util.Collection;
 import org.apache.hadoop.mapreduce.Mapper;
 
 import com.basho.riak.client.IRiakObject;
-import com.basho.riak.client.RiakException;
 import com.basho.riak.client.cap.ConflictResolver;
 import com.basho.riak.client.convert.Converter;
 import com.basho.riak.client.raw.RiakResponse;
 
 /**
  * @author russell
+ * @param <T>
+ *            the type for the input value
  * @param <OK>
  *            the type for the out key
  * @param <OV>
@@ -57,18 +58,13 @@ public abstract class RiakMapper<T, OK, OV> extends Mapper<BucketKey, RiakRespon
             InterruptedException {
 
         // convert, conflict resolve
-
         final Collection<T> siblings = new ArrayList<T>(value.numberOfValues());
 
-        try {
-            for (IRiakObject o : value) {
-                siblings.add(converter.toDomain(o));
-            }
-
-            map(key, resolver.resolve(siblings), context);
-        } catch (RiakException e) {
-            throw new RuntimeException(e);
+        for (IRiakObject o : value) {
+            siblings.add(converter.toDomain(o));
         }
+
+        map(key, resolver.resolve(siblings), context);
     }
 
     public abstract void map(BucketKey k, T value, Context context) throws IOException, InterruptedException;

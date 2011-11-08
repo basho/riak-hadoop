@@ -11,7 +11,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.basho.riak.hadoop;
+package com.basho.riak.hadoop.config;
 
 import java.net.URI;
 
@@ -82,4 +82,45 @@ public abstract class RiakLocation {
         return new RiakHTTPLocation(uri.getHost(), uri.getPort(), uri.getPath());
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((host == null) ? 0 : host.hashCode());
+        result = prime * result + port;
+        result = prime * result + ((transport == null) ? 0 : transport.hashCode());
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof RiakLocation)) {
+            return false;
+        }
+        RiakLocation other = (RiakLocation) obj;
+        if (host == null) {
+            if (other.host != null) {
+                return false;
+            }
+        } else if (!host.equals(other.host)) {
+            return false;
+        }
+        if (port != other.port) {
+            return false;
+        }
+        if (transport != other.transport) {
+            return false;
+        }
+        return true;
+    }
 }

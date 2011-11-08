@@ -11,20 +11,32 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.basho.riak.hadoop;
+package com.basho.riak.hadoop.config;
 
 /**
  * @author russell
  * 
  */
-public class RiakPBLocation extends RiakLocation {
+public class RiakHTTPLocation extends RiakLocation {
+
+    private final String riakPath;
 
     /**
+     * @param transport
      * @param host
      * @param port
+     * @param riakPath
      */
-    protected RiakPBLocation(String host, int port) {
-        super(RiakTransport.PB, host, port);
+    public RiakHTTPLocation(String host, int port, String riakPath) {
+        super(RiakTransport.HTTP, host, port);
+        this.riakPath = riakPath;
+    }
+
+    /**
+     * @return the riakPath
+     */
+    public String getRiakPath() {
+        return riakPath;
     }
 
     /*
@@ -33,7 +45,14 @@ public class RiakPBLocation extends RiakLocation {
      * @see com.basho.riak.hadoop.RiakLocation#asString()
      */
     @Override public String asString() {
-        return new StringBuilder(getHost()).append(":").append(getPort()).toString();
-    }
+        StringBuilder sb = new StringBuilder("http://");
+        sb.append(getHost()).append(":").append(getPort());
 
+        if (!riakPath.startsWith("/")) {
+            sb.append("/");
+        }
+
+        sb.append(riakPath);
+        return sb.toString();
+    }
 }
