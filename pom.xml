@@ -4,7 +4,7 @@
 
 	<groupId>com.basho.riak.hadoop</groupId>
 	<artifactId>riak-hadoop</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>0.2-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>riak-hadoop</name>
