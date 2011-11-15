@@ -3,13 +3,16 @@ Riak-Hadoop is a library for using [[http://basho.com/products/riak-overview/][R
 Map/Reduce]].
 
 ** How it works
-By extending =InputFormat=, =InputSplit=, =RecordReader=,
-=OutputFormat= and =RecordWriter=, you can declare any valid Riak M/R
-input (2i query, riak search query, list of keys, bucket) as input to
-a Hadoop M/R job. The library will split the keys into partitions and
-Hadoop will use the =RiakRecordReader= to load Key/Value pairs from
-Riak for the =Mapper= tasks. The =Reducer= output is written back to a
-configured bucket in Riak. It uses the [[https://github.com/basho/riak-java-client/][Riak-Java-Client]] to talk to Riak.
+The library extends =InputFormat=, =InputSplit=, =RecordReader=,
+=OutputFormat= and =RecordWriter=, so you can declare any valid Riak
+M/R input (2i query, riak search query, list of keys, bucket) as input
+to a Hadoop M/R job. The library will split the keys into partitions
+and Hadoop will use the =RiakRecordReader= to load Key/Value pairs
+from Riak for the =Mapper= tasks. The =Reducer= output is written back
+to a configured bucket in Riak. It uses the [[https://github.com/basho/riak-java-client/][Riak-Java-Client]] to talk
+to Riak. You just write a normal Hadoop Map/Reduce job, but declare
+=RiakInputFormat= and =RiakOutpurFormat= as sources/sinks for your
+data/results.
 
 ** Example?
 Have a look at the
@@ -17,7 +20,8 @@ Have a look at the
 
 ** Future
 I plan to have the library load bulk data from Riak to HDFS to better
-leverage Hadoop's integration with that file system.
+leverage Hadoop's integration with that file system. There will be
+docs.
 
 ** Feedback
 Raise issues, pull requests, comments etc. as ever through GitHub, or
