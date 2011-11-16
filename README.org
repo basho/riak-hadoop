@@ -2,6 +2,9 @@
 Riak-Hadoop is a library for using [[http://basho.com/products/riak-overview/][Riak]] as an input/output to [[http://hadoop.apache.org/mapreduce/][Hadoop
 Map/Reduce]].
 
+*NOTE* This library is not yet offically supported by Basho and is
+strictly experimental.
+
 ** How it works
 The library extends =InputFormat=, =InputSplit=, =RecordReader=,
 =OutputFormat= and =RecordWriter=, so you can declare any valid Riak
