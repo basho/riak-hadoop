@@ -25,6 +25,8 @@ import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import com.basho.riak.client.RiakException;
 
 /**
+ * Riak specific {@link OutputFormat}, just creates a {@link RiakRecordWriter}
+ * 
  * @author russell
  * 
  */
@@ -58,10 +60,11 @@ public class RiakOutputFormat<V> extends OutputFormat<Text, V> {
      * org.apache.hadoop.mapreduce.OutputFormat#getRecordWriter(org.apache.hadoop
      * .mapreduce.TaskAttemptContext)
      */
-    @Override public RecordWriter<Text, V> getRecordWriter(TaskAttemptContext tac) throws IOException, InterruptedException {
+    @Override public RecordWriter<Text, V> getRecordWriter(TaskAttemptContext tac) throws IOException,
+            InterruptedException {
         try {
             return new RiakRecordWriter<V>(tac);
-        } catch(RiakException e) {
+        } catch (RiakException e) {
             throw new IOException(e);
         }
     }

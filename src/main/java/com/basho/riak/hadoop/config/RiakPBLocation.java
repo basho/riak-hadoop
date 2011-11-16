@@ -14,6 +14,8 @@
 package com.basho.riak.hadoop.config;
 
 /**
+ * Models the PB interface endpoint's location
+ * 
  * @author russell
  * 
  */

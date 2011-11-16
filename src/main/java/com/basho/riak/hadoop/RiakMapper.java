@@ -25,6 +25,10 @@ import com.basho.riak.client.convert.Converter;
 import com.basho.riak.client.raw.RiakResponse;
 
 /**
+ * A Riak specific extension of {@link Mapper} that can be used if you wish to
+ * work with domain specific types and handle sibling values in your
+ * {@link Mapper#map} method
+ * 
  * @author russell
  * @param <T>
  *            the type for the input value
@@ -40,8 +44,14 @@ public abstract class RiakMapper<T, OK, OV> extends Mapper<BucketKey, RiakRespon
     private final ConflictResolver<T> resolver;
 
     /**
+     * Create a {@link Mapper} that will use the provided {@link Converter} and
+     * {@link ConflictResolver} on the raw {@link RiakResponse} returned by the
+     * {@link RiakRecordReader}
+     * 
      * @param converter
+     *            a {@link Converter}
      * @param resolver
+     *            a {@link ConflictResolver}
      */
     public RiakMapper(Converter<T> converter, ConflictResolver<T> resolver) {
         this.converter = converter;
@@ -67,6 +77,20 @@ public abstract class RiakMapper<T, OK, OV> extends Mapper<BucketKey, RiakRespon
         map(key, resolver.resolve(siblings), context);
     }
 
+    /**
+     * Override this method in your {@link Mapper}. It is called by the default
+     * {@link Mapper#map} method, after applying the {@link Converter} and
+     * {@link ConflictResolver}. Put your mapping code here.
+     * 
+     * @param k
+     *            the {@link BucketKey}
+     * @param value
+     *            the converted value
+     * @param context
+     *            the hadoop job Context
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public abstract void map(BucketKey k, T value, Context context) throws IOException, InterruptedException;
 
 }

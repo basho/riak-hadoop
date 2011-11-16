@@ -29,9 +29,9 @@ import com.basho.riak.hadoop.BucketKey;
  */
 public interface KeyLister {
     /**
-     * Thanks to hadoop's configuration framework a ket lister has to
-     * deserialize and reserialize itself this method and init(String) below are
-     * a light weight way of doing that
+     * Thanks to hadoop's configuration framework a key lister has to
+     * deserialize and serialize itself this method and init(String) below are a
+     * light weight way of doing that
      * 
      * @return a String that can be used by the implementations init method to
      *         reconsitute the state of the lister

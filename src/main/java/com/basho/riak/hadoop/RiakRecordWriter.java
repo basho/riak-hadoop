@@ -27,6 +27,8 @@ import com.basho.riak.hadoop.config.ClientFactory;
 import com.basho.riak.hadoop.config.RiakConfig;
 
 /**
+ * Writes reducer results to Riak
+ * 
  * @author russell
  * @param <V>
  * 

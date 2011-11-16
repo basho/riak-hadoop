@@ -16,6 +16,8 @@ package com.basho.riak.hadoop.config;
 import java.net.URI;
 
 /**
+ * Models a Riak API end point location
+ * 
  * @author russell
  * 
  */
@@ -26,9 +28,14 @@ public abstract class RiakLocation {
     private final int port;
 
     /**
+     * Create a location
+     * 
      * @param transport
+     *            the {@link RiakTransport} for this location
      * @param host
+     *            the host
      * @param port
+     *            the port
      */
     protected RiakLocation(RiakTransport transport, String host, int port) {
         this.transport = transport;
@@ -57,8 +64,20 @@ public abstract class RiakLocation {
         return port;
     }
 
+    /**
+     * Serialize this location to a String
+     * 
+     * @return a string representation that can be used by fromString(String)
+     */
     public abstract String asString();
 
+    /**
+     * De-serialize the location from a String
+     * 
+     * @param location
+     *            a String representation from asString()
+     * @return a {@link RiakLocation}
+     */
     public static RiakLocation fromString(String location) {
         RiakLocation result = null;
         if (location.contains("/")) {
@@ -82,7 +101,9 @@ public abstract class RiakLocation {
         return new RiakHTTPLocation(uri.getHost(), uri.getPort(), uri.getPath());
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#hashCode()
      */
     @Override public int hashCode() {
@@ -94,7 +115,9 @@ public abstract class RiakLocation {
         return result;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override public boolean equals(Object obj) {

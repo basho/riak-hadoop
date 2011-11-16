@@ -26,17 +26,12 @@ import org.apache.hadoop.mapreduce.InputSplit;
 import com.basho.riak.hadoop.config.RiakLocation;
 
 /**
+ * Riak specific extension of {@link InputSplit}
+ * 
  * @author russell
  * 
  */
 public class RiakInputSplit extends InputSplit implements Writable {
-
-    /**
-     * @return the location
-     */
-    public synchronized RiakLocation getLocation() {
-        return location;
-    }
 
     private BucketKey[] inputs;
     private RiakLocation location;
@@ -49,21 +44,18 @@ public class RiakInputSplit extends InputSplit implements Writable {
     }
 
     /**
-     * @param inputs
-     *            the inputs to set
+     * @return the location for the split (this is where the record reader for
+     *         this split will load data from)
      */
-    public void setInputs(BucketKey[] inputs) {
-        this.inputs = inputs;
-    }
-
-    public void setLocation(RiakLocation location) {
-        this.location = location;
+    public synchronized RiakLocation getLocation() {
+        return location;
     }
 
     /**
-     * @return the inputs
+     * @return the inputs the collection of keys whose data will be fetched by
+     *         the record reader
      */
-    public Collection<BucketKey> getInputs() {
+    public synchronized Collection<BucketKey> getInputs() {
         return Arrays.asList(inputs.clone());
     }
 
@@ -114,7 +106,9 @@ public class RiakInputSplit extends InputSplit implements Writable {
         }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#hashCode()
      */
     @Override public int hashCode() {
@@ -125,7 +119,9 @@ public class RiakInputSplit extends InputSplit implements Writable {
         return result;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override public boolean equals(Object obj) {
@@ -151,5 +147,5 @@ public class RiakInputSplit extends InputSplit implements Writable {
         }
         return true;
     }
-    
+
 }

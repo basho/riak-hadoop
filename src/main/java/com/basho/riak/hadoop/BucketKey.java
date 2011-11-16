@@ -16,6 +16,8 @@ package com.basho.riak.hadoop;
 import org.codehaus.jackson.annotate.JsonCreator;
 
 /**
+ * Models a bucket/key location in Riak.
+ * 
  * @author russell
  * 
  */
@@ -24,6 +26,12 @@ public class BucketKey {
     private final String bucket;
     private final String key;
 
+    /**
+     * Provide a JSON constructor for Jackson.
+     * 
+     * @param bucketKey
+     *            a String[2] where [0] is the bucket and [1] is the key
+     */
     @JsonCreator public BucketKey(String[] bucketKey) {
         if (bucketKey == null || bucketKey.length != 2) {
             throw new IllegalArgumentException("bucketKey must be a String[] of length 2");
@@ -34,8 +42,12 @@ public class BucketKey {
     }
 
     /**
+     * Default constructor
+     * 
      * @param bucket
+     *            the bucket
      * @param key
+     *            the key
      */
     public BucketKey(String bucket, String key) {
         this.bucket = bucket;

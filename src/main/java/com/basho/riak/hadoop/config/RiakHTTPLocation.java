@@ -14,6 +14,8 @@
 package com.basho.riak.hadoop.config;
 
 /**
+ * Holder for a Riak HTTP interface location
+ * 
  * @author russell
  * 
  */
@@ -22,10 +24,14 @@ public class RiakHTTPLocation extends RiakLocation {
     private final String riakPath;
 
     /**
-     * @param transport
+     * Create an HTTP location
+     * 
      * @param host
+     *            the host
      * @param port
+     *            the HTTP port
      * @param riakPath
+     *            the path to the 'riak' resource
      */
     public RiakHTTPLocation(String host, int port, String riakPath) {
         super(RiakTransport.HTTP, host, port);
@@ -33,7 +39,7 @@ public class RiakHTTPLocation extends RiakLocation {
     }
 
     /**
-     * @return the riakPath
+     * @return the path to the 'riak' resource
      */
     public String getRiakPath() {
         return riakPath;

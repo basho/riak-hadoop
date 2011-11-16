@@ -91,7 +91,7 @@ public final class RiakConfig {
 
     /**
      * Set the size of the hadoop cluster, this is used by the
-     * {@link RiakInputFormatOld} to try and optimize the number of
+     * {@link RiakInputFormat} to try and optimize the number of
      * {@link InputSplit}s to create
      * 
      * @param conf
@@ -123,7 +123,8 @@ public final class RiakConfig {
 
     /**
      * @param conf
-     * @return
+     *            the {@link Configuration} to query
+     * @return the {@link KeyLister} the job was configured with
      * @throws RuntimeException
      *             if a {@link IllegalAccessException} or
      *             {@link InstantiationException} is thrown creating a
@@ -147,9 +148,11 @@ public final class RiakConfig {
      * Set the {@link KeyLister} implementation to use.
      * 
      * @param conf
-     * @param clazz
-     * @return the configuration update with a serialized version of the lister
-     *         provied
+     *            the {@link Configuration} to update
+     * @param lister
+     *            the {@link KeyLister} to use
+     * @return the configuration updated with a serialized version of the lister
+     *         provided
      */
     public static <T extends KeyLister> Configuration setKeyLister(Configuration conf, T lister) throws IOException {
         conf.setClass(KEY_LISTER_CLASS_PROPERTY, lister.getClass(), KeyLister.class);
@@ -161,6 +164,7 @@ public final class RiakConfig {
      * Get the configured output bucket for the job's results
      * 
      * @param conf
+     *            the {@link Configuration} to query
      * @return the bucket name
      */
     public static String getOutputBucket(Configuration conf) {

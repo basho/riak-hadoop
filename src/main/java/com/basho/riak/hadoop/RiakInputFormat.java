@@ -1,5 +1,5 @@
 /*
-x * This file is provided to you under the Apache License, Version 2.0 (the
+ * x * This file is provided to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * 
@@ -35,19 +35,30 @@ import com.basho.riak.hadoop.config.RiakLocation;
 import com.basho.riak.hadoop.keylisters.KeyLister;
 
 /**
+ * Riak specific {@link InputFormat} for Hadoop Map/Reduce
+ * 
  * @author russell
  * 
  */
 public class RiakInputFormat extends InputFormat<BucketKey, RiakResponse> {
 
+    /**
+     * TODO: add this to the configuration.
+     */
     private static final int MINIMUM_SPLIT = 10;
 
+    /* (non-Javadoc)
+     * @see org.apache.hadoop.mapreduce.InputFormat#createRecordReader(org.apache.hadoop.mapreduce.InputSplit, org.apache.hadoop.mapreduce.TaskAttemptContext)
+     */
     @Override public RecordReader<BucketKey, RiakResponse> createRecordReader(InputSplit split,
                                                                               TaskAttemptContext context)
             throws IOException, InterruptedException {
         return new RiakRecordReader();
     }
 
+    /* (non-Javadoc)
+     * @see org.apache.hadoop.mapreduce.InputFormat#getSplits(org.apache.hadoop.mapreduce.JobContext)
+     */
     @Override public List<InputSplit> getSplits(JobContext context) throws IOException, InterruptedException {
         Configuration conf = context.getConfiguration();
         RiakLocation[] locations = RiakConfig.getRiakLocatons(conf);

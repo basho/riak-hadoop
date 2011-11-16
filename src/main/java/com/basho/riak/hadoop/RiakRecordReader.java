@@ -26,6 +26,8 @@ import com.basho.riak.client.raw.RawClient;
 import com.basho.riak.client.raw.RiakResponse;
 
 /**
+ * Wrapper around a {@link RawClient} for reading values from Riak
+ * 
  * @author russell
  * 
  */

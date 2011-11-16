@@ -174,7 +174,9 @@ public class SecondaryIndexesKeyLister implements KeyLister {
         return r.getResult(BucketKey.class);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#hashCode()
      */
     @Override public int hashCode() {
@@ -184,7 +186,9 @@ public class SecondaryIndexesKeyLister implements KeyLister {
         return result;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override public boolean equals(Object obj) {

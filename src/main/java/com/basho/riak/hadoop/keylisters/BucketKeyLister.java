@@ -23,6 +23,8 @@ import com.basho.riak.client.bucket.Bucket;
 import com.basho.riak.hadoop.BucketKey;
 
 /**
+ * A full list buckets key lister. DANGER, not advised for production use.
+ * 
  * @author russell
  * 
  */

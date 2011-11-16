@@ -14,6 +14,8 @@
 package com.basho.riak.hadoop.config;
 
 /**
+ * Simple enum of available Riak transports
+ * 
  * @author russell
  * 
  */
