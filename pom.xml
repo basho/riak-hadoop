@@ -4,23 +4,33 @@
 
 	<groupId>com.basho.riak.hadoop</groupId>
 	<artifactId>riak-hadoop</artifactId>
-	<version>0.2-SNAPSHOT</version>
+	<version>0.2</version>
 	<packaging>jar</packaging>
-
 	<name>riak-hadoop</name>
-	<url>http://maven.apache.org</url>
-
+	<url>https://github.com/basho/riak-hadoop</url>
+	
+	<scm>
+		<url>http://github.org/basho/riak-hadoop</url>
+		<connection>scm:git:git://github.com/basho/riak-hadoop</connection>
+	</scm>
+	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	
-	<repositories>
+	<distributionManagement>
+		<snapshotRepository>
+			<id>sonatype-nexus-snapshots</id>
+			<name>Sonatype Nexus Snapshots</name>
+			<url>http://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
 		<repository>
-			<id>com.basho.riak</id>
-			<url>https://oss.sonatype.org/content/repositories/combashoriak-168</url>
+			<id>sonatype-nexus-staging</id>
+			<name>Nexus Release Repository</name>
+			<url>http://oss.sonatype.org/service/local/staging/deploy/maven2</url>
 		</repository>
-	</repositories>
-
+	</distributionManagement>
+		
 	<dependencies>
 		<dependency>
 			<groupId>com.basho.riak</groupId>
