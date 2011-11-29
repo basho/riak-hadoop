@@ -81,6 +81,39 @@
 					<target>1.5</target>
 				</configuration>
 			</plugin>
+		      <plugin>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.1</version>
+			</plugin>
 		</plugins>
 	</build>
+	<profiles>
+		<profile>
+			<id>release</id>
+			<activation>
+				<property>
+					<name>performRelease</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<!-- NOTE: source and javadoc jars automatically generated on release (http://maven.apache.org/pom.html#The_Super_POM) -->
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
