@@ -7,7 +7,22 @@
 	<version>0.2</version>
 	<packaging>jar</packaging>
 	<name>riak-hadoop</name>
+	<description>Riak-Hadoop connector</description>
 	<url>https://github.com/basho/riak-hadoop</url>
+	
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+	
+	 <developers>
+        <developer>
+            <name>Russell Brown</name>
+            <email>russelldb@basho.com</email>
+        </developer>
+	</developers>
 	
 	<scm>
 		<url>http://github.org/basho/riak-hadoop</url>
