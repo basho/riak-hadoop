@@ -1,4 +1,7 @@
 * Riak-Hadoop
+
+[[http://travis-ci.org/basho/riak-hadoop][Travis-CI]] :: [[https://secure.travis-ci.org/basho/riak-hadoop.png]]
+
 Riak-Hadoop is a library for using [[http://basho.com/products/riak-overview/][Riak]] as an input/output to [[http://hadoop.apache.org/mapreduce/][Hadoop
 Map/Reduce]].
 
